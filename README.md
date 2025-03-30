@@ -1,5 +1,5 @@
 # What alternatrr does
-alternatrr lets you add alternative titles to your sonarr instance by editing the sonarr.db file directly via a simple UI.
+alternatrr lets you add alternative titles to your Sonarr and Radarr instances by editing the sonarr.db and radarr.db files directly via a simple UI.
 
 # docker-compose.yaml
 ```yaml
@@ -8,10 +8,11 @@ alternatrr lets you add alternative titles to your sonarr instance by editing th
 version: '3'
 services:
   alternatrr:
-    image: ghcr.io/theultimatec0der/alternatrr:latest
+    image: ghcr.io/semeleven/alternatrr:latest
     environment:
     - ConnectionStrings__DefaultConnection=Data Source=/opt/alternatrr/app/alternatrr.db
     - ConnectionStrings__sonarr=Data Source=/opt/sonarr/sonarr.db
+    - ConnectionStrings__radarr=Data Source=/opt/radarr/radarr.db
     - Login__Username=Test
     - Login__Password=ChangeMe321!
     # Needed for reverseproxy
@@ -21,5 +22,6 @@ services:
     - LETSENCRYPT_EMAIL=YOUREMAILADDRESS
     volumes:
     - /opt/sonarr:/opt/sonarr  #Mounting the directory with sonarr.db in it
+    - /opt/radarr:/opt/radarr  #Mounting the directory with radarr.db in it
     - /opt/alternatrr/app:/opt/alternatrr/app #Mounting the alternatrr.db peristent login
 ```

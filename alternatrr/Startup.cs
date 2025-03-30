@@ -1,5 +1,6 @@
 using alternatrr.Configuration;
 using alternatrr.Data;
+using alternatrr.Data.Radarr;
 using alternatrr.Services;
 
 using Microsoft.AspNetCore.Builder;
@@ -38,6 +39,12 @@ namespace alternatrr
             services.AddDbContext<SonarrDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("sonarr")
+                )
+            );
+
+            services.AddDbContext<RadarrDbContext>(options =>
+                options.UseSqlite(
+                    Configuration.GetConnectionString("radarr")
                 )
             );
 

@@ -1,0 +1,45 @@
+@model alternatrr.Models.Radarr.RadarrIndexViewModel
+
+@{
+    ViewData["Title"] = "Movies";
+    ViewData["Message"] = "A list of all your movies";
+}
+
+<div class="row">
+    @if (Model.Movies.Count == 0)
+    {
+        <div class="col-md-12">
+            <div class="alert alert-info" role="alert">
+                No movies found in your Radarr database.
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td><b>Title</b></td>
+                        <td><b>TMDb Id</b></td>
+                        <td><b>IMDb Id</b></td>
+                        <td><b>Year</b></td>
+                    </tr>
+                </thead>
+                @foreach (var movie in Model.Movies)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Mappings" asp-controller="Radarr" asp-route-id="@movie.Id">
+                                @movie.Title
+                            </a>
+                        </td>
+                        <td>@movie.TmdbId</td>
+                        <td>@movie.ImdbId</td>
+                        <td>@movie.Year</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+</div>
