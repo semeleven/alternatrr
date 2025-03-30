@@ -66,7 +66,7 @@ namespace alternatrr.Controllers
             var movie = await _radarrDbContext.Movies.FirstOrDefaultAsync(x => x.Id == model.MovieId);
             if (movie == null) return View("Error");
 
-            await _radarrDbContext.SceneMappings.AddAsync(new SceneMapping()
+            await _radarrDbContext.SceneMappings.AddAsync(new Data.Radarr.SceneMapping()
             {
                 TmdbId = movie.TmdbId,
                 ParseTerm = _sceneMappingService.CleanParseTitle(model.SearchTerm),
