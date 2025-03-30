@@ -5,6 +5,7 @@ alternatrr lets you add alternative titles to your Sonarr and Radarr instances b
 ```yaml
 # example docker-compose.yml
 
+
 version: '3'
 services:
   alternatrr:
