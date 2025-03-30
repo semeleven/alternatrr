@@ -6,10 +6,10 @@ namespace alternatrr.Models.Radarr
     public class RadarrDeleteMappingViewModel
     {
         [Required]
-        public long MappingId { get; set; }
+        public long AlternativeTitleId { get; set; }
 
         public Movie Movie { get; set; }
-
-        public Data.Radarr.SceneMapping SceneMapping { get; set; }
+        public MovieMetadata MovieMetadata { get; set; }
+        public AlternativeTitle AlternativeTitle { get; set; }
     }
 }

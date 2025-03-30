@@ -31,12 +31,12 @@
                     <tr>
                         <td>
                             <a asp-action="Mappings" asp-controller="Radarr" asp-route-id="@movie.Id">
-                                @movie.Title
+                                @movie.MovieMetadata.Title
                             </a>
                         </td>
-                        <td>@movie.TmdbId</td>
-                        <td>@movie.ImdbId</td>
-                        <td>@movie.Year</td>
+                        <td>@movie.MovieMetadata.TmdbId</td>
+                        <td>@movie.MovieMetadata.ImdbId</td>
+                        <td>@movie.MovieMetadata.Year</td>
                     </tr>
                 }
             </table>

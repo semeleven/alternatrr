@@ -29,50 +29,55 @@ namespace alternatrr.Controllers
         {
             return View(new RadarrIndexViewModel
             {
-                Movies = await _radarrDbContext.Movies.ToListAsync()
+                Movies = await _radarrDbContext.Movies.Include(m => m.MovieMetadata).ToListAsync()
             });
         }
 
         public async Task<IActionResult> Mappings(long id)
         {
-            var movie = await _radarrDbContext.Movies.FirstOrDefaultAsync(x => x.Id == id);
+            var movie = await _radarrDbContext.Movies.Include(m => m.MovieMetadata).FirstOrDefaultAsync(x => x.Id == id);
             if (movie == null) return View("Error");
 
-            var mappings = await _radarrDbContext.SceneMappings.Where(x => x.TmdbId == movie.TmdbId).ToListAsync();
+            var movieMetadata = movie.MovieMetadata;
+            var alternativeTitles = await _radarrDbContext.AlternativeTitles
+                .Where(x => x.MovieMetadataId == movieMetadata.Id)
+                .ToListAsync();
 
             return View(new RadarrMappingsViewModel()
             {
                 Movie = movie,
-                SceneMappings = mappings
+                MovieMetadata = movieMetadata,
+                AlternativeTitles = alternativeTitles
             });
         }
 
         [HttpGet]
         public async Task<IActionResult> AddMapping(long id)
         {
-            var movie = await _radarrDbContext.Movies.FirstOrDefaultAsync(x => x.Id == id);
+            var movie = await _radarrDbContext.Movies.Include(m => m.MovieMetadata).FirstOrDefaultAsync(x => x.Id == id);
             if (movie == null) return View("Error");
 
             return View(new RadarrAddMappingInputModel()
             {
                 Movie = movie,
+                MovieMetadata = movie.MovieMetadata,
                 MovieId = movie.Id,
+                MovieMetadataId = movie.MovieMetadata.Id
             });
         }
 
         [HttpPost]
         public async Task<IActionResult> AddMapping(RadarrAddMappingInputModel model)
         {
-            var movie = await _radarrDbContext.Movies.FirstOrDefaultAsync(x => x.Id == model.MovieId);
+            var movie = await _radarrDbContext.Movies.Include(m => m.MovieMetadata).FirstOrDefaultAsync(x => x.Id == model.MovieId);
             if (movie == null) return View("Error");
 
-            await _radarrDbContext.SceneMappings.AddAsync(new Data.Radarr.SceneMapping()
+            await _radarrDbContext.AlternativeTitles.AddAsync(new AlternativeTitle()
             {
-                TmdbId = movie.TmdbId,
-                ParseTerm = _sceneMappingService.CleanParseTitle(model.SearchTerm),
-                SearchTerm = _sceneMappingService.CleanSearchTitle(model.SearchTerm),
+                MovieMetadataId = movie.MovieMetadata.Id,
                 Title = model.SearchTerm,
-                Type = "alternatrr"
+                CleanTitle = _sceneMappingService.CleanParseTitle(model.SearchTerm),
+                SourceType = 0 // 0 seems to be the value for user-added titles based on the sample data
             });
             await _radarrDbContext.SaveChangesAsync();
 
@@ -82,16 +87,23 @@ namespace alternatrr.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteMapping(long id)
         {
-            var mapping = await _radarrDbContext.SceneMappings.FirstOrDefaultAsync(x => x.Id == id);
-            if (mapping == null) return View("Error");
+            var alternativeTitle = await _radarrDbContext.AlternativeTitles.FirstOrDefaultAsync(x => x.Id == id);
+            if (alternativeTitle == null) return View("Error");
 
-            var movie = await _radarrDbContext.Movies.FirstOrDefaultAsync(x => x.TmdbId == mapping.TmdbId);
+            var movieMetadata = await _radarrDbContext.MovieMetadata
+                .FirstOrDefaultAsync(x => x.Id == alternativeTitle.MovieMetadataId);
+            if (movieMetadata == null) return View("Error");
+
+            var movie = await _radarrDbContext.Movies
+                .FirstOrDefaultAsync(x => x.MovieMetadataId == movieMetadata.Id);
+            if (movie == null) return View("Error");
 
             return View(new RadarrDeleteMappingViewModel()
             {
-                MappingId = mapping.Id,
+                AlternativeTitleId = alternativeTitle.Id,
                 Movie = movie,
-                SceneMapping = mapping
+                MovieMetadata = movieMetadata,
+                AlternativeTitle = alternativeTitle
             });
         }
 
@@ -100,13 +112,19 @@ namespace alternatrr.Controllers
         {
             if (!ModelState.IsValid) return View("Error");
 
-            var mapping = await _radarrDbContext.SceneMappings.FirstOrDefaultAsync(x => x.Id == model.MappingId);
-            if (mapping == null) return View("Error");
+            var alternativeTitle = await _radarrDbContext.AlternativeTitles
+                .FirstOrDefaultAsync(x => x.Id == model.AlternativeTitleId);
+            if (alternativeTitle == null) return View("Error");
 
-            var movie = await _radarrDbContext.Movies.FirstOrDefaultAsync(x => x.TmdbId == mapping.TmdbId);
+            var movieMetadata = await _radarrDbContext.MovieMetadata
+                .FirstOrDefaultAsync(x => x.Id == alternativeTitle.MovieMetadataId);
+            if (movieMetadata == null) return View("Error");
+
+            var movie = await _radarrDbContext.Movies
+                .FirstOrDefaultAsync(x => x.MovieMetadataId == movieMetadata.Id);
             if (movie == null) return View("Error");
 
-            _radarrDbContext.SceneMappings.Remove(mapping);
+            _radarrDbContext.AlternativeTitles.Remove(alternativeTitle);
             await _radarrDbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Mappings), new { id = movie.Id });

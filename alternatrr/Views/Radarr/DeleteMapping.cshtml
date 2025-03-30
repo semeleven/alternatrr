@@ -1,6 +1,6 @@
 @model alternatrr.Models.Radarr.RadarrDeleteMappingViewModel
 @{
-    ViewData["Title"] = "Delete mapping";
+    ViewData["Title"] = "Delete alternative title";
     ViewData["Message"] = "Are you sure?";
 }
 
@@ -8,9 +8,9 @@
     <div class="col-md-12">
         <div class="alert alert-warning" role="alert">
             <form asp-action="DeleteMapping" asp-controller="Radarr" method="post">
-                <p>Do you really want to delete the mapping <code>@Model.SceneMapping.SearchTerm</code> ?</p>
+                <p>Do you really want to delete the alternative title <code>@Model.AlternativeTitle.Title</code> ?</p>
 
-                @Html.HiddenFor(x => x.MappingId)
+                @Html.HiddenFor(x => x.AlternativeTitleId)
 
                 <button type="submit" class="btn btn-danger">Yes, I am sure!</button>
             </form>

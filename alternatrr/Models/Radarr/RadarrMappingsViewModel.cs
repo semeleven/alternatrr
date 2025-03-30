@@ -6,7 +6,7 @@ namespace alternatrr.Models.Radarr
     public class RadarrMappingsViewModel
     {
         public Movie Movie { get; set; }
-
-        public IList<Data.Radarr.SceneMapping> SceneMappings { get; set; }
+        public MovieMetadata MovieMetadata { get; set; }
+        public IList<AlternativeTitle> AlternativeTitles { get; set; }
     }
 }

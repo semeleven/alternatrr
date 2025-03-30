@@ -1,47 +1,45 @@
 @model alternatrr.Models.Radarr.RadarrMappingsViewModel
 
 @{
-    ViewData["Title"] = $"{Model.Movie.Title} mappings";
-    ViewData["Message"] = "All mappings for this movie";
+    ViewData["Title"] = $"{Model.MovieMetadata.Title} mappings";
+    ViewData["Message"] = "All alternative titles for this movie";
 }
 
 <div class="row">
-    @if (Model.SceneMappings.Count == 0)
+    @if (Model.AlternativeTitles.Count == 0)
     {
         <div class="col-md-12">
             <div class="alert alert-info" role="alert">
-                There is no mapping for this movie, but you can <a class="btn btn-sm btn-primary" asp-action="AddMapping" asp-route-id="@Model.Movie.Id" role="button">add one</a>
+                There are no alternative titles for this movie, but you can <a class="btn btn-sm btn-primary" asp-action="AddMapping" asp-route-id="@Model.Movie.Id" role="button">add one</a>
             </div>
         </div>
     }
     else
     {
         <div class="col-md-12">
-            <a class="btn btn-primary btn-sm" asp-action="AddMapping" asp-controller="Radarr" asp-route-id="@Model.Movie.Id">Add new mapping</a>
+            <a class="btn btn-primary btn-sm" asp-action="AddMapping" asp-controller="Radarr" asp-route-id="@Model.Movie.Id">Add new alternative title</a>
 
             <table class="table table-striped mt-3">
                 <thead>
                     <tr>
                         <td><b>Title</b></td>
-                        <td><b>SearchTerm</b></td>
-                        <td><b>ParseTerm</b></td>
-                        <td><b>Source</b></td>
+                        <td><b>Clean Title</b></td>
+                        <td><b>Source Type</b></td>
                         <td><b>Action</b></td>
                     </tr>
                 </thead>
-                @foreach (var sceneMapping in Model.SceneMappings)
+                @foreach (var alternativeTitle in Model.AlternativeTitles)
                 {
                     <tr>
                         <td>
-                            @sceneMapping.Title
+                            @alternativeTitle.Title
                         </td>
-                        <td>@sceneMapping.SearchTerm</td>
-                        <td>@sceneMapping.ParseTerm</td>
-                        <td>@sceneMapping.Type</td>
+                        <td>@alternativeTitle.CleanTitle</td>
+                        <td>@(alternativeTitle.SourceType == 0 ? "User" : alternativeTitle.SourceType.ToString())</td>
                         <td>
-                            @if (sceneMapping.Type == "alternatrr")
+                            @if (alternativeTitle.SourceType == 0)
                             {
-                                <a class="btn btn-danger btn-sm" asp-action="DeleteMapping" asp-route-Id="@sceneMapping.Id">Delete</a>
+                                <a class="btn btn-danger btn-sm" asp-action="DeleteMapping" asp-route-Id="@alternativeTitle.Id">Delete</a>
                             }
                             else
                             {
@@ -52,7 +50,7 @@
                 }
             </table>
 
-            <a class="btn btn-primary btn-sm" asp-action="AddMapping" asp-controller="Radarr" asp-route-id="@Model.Movie.Id">Add new mapping</a>
+            <a class="btn btn-primary btn-sm" asp-action="AddMapping" asp-controller="Radarr" asp-route-id="@Model.Movie.Id">Add new alternative title</a>
         </div>
     }
 </div>

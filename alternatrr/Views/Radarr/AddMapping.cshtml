@@ -1,18 +1,19 @@
 @model alternatrr.Models.Radarr.RadarrAddMappingInputModel
 
 @{
-    ViewData["Title"] = "Create a new mapping";
-    ViewData["Message"] = $"This creates a new mapping for {Model.Movie.Title}";
+    ViewData["Title"] = "Create a new alternative title";
+    ViewData["Message"] = $"This creates a new alternative title for {Model.MovieMetadata.Title}";
 }
 
 <form asp-action="AddMapping" asp-controller="Radarr" class="row" method="post">
 
     @Html.HiddenFor(x => x.MovieId)
+    @Html.HiddenFor(x => x.MovieMetadataId)
 
     <div class="col-md-12">
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">Add a new mapping</h5>
+                <h5 class="card-title">Add a new alternative title</h5>
                 <h6 class="card-subtitle mb-2 text-muted">Please enter the information below</h6>
 
                 <hr />
@@ -20,10 +21,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group row">
-                            <label class="col-2 col-form-label" asp-for="SearchTerm"></label>
+                            <label class="col-2 col-form-label" asp-for="SearchTerm">Alternative Title</label>
                             <div class="col-sm-10">
                                 <input asp-for="SearchTerm" class="form-control" />
-                                <small asp-description-for="Name" class="form-text text-muted"></small>
+                                <small asp-description-for="SearchTerm" class="form-text text-muted">Enter an alternative title for this movie</small>
                             </div>
                         </div>
                     </div>
