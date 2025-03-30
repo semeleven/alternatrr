@@ -10,6 +10,6 @@ namespace alternatrr.Models.Radarr
 
         public Movie Movie { get; set; }
 
-        public SceneMapping SceneMapping { get; set; }
+        public Data.Radarr.SceneMapping SceneMapping { get; set; }
     }
 }
