@@ -21,7 +21,6 @@ namespace alternatrr.Data.Radarr
         public string Genres { get; set; }
         public long? Year { get; set; }
         public string Ratings { get; set; }
-        public string Certification { get; set; }
         public string SortTitle { get; set; }
         public long? QualityProfileId { get; set; }
         public string Tags { get; set; }
